@@ -30,9 +30,8 @@ This project is built with a modern tech stack and includes a robust set of feat
 
 -   **Frontend:** [React](https://reactjs.org/) (with Vite)
 -   **UI:** [Tailwind CSS](https://tailwindcss.com/) & [shadcn/ui](https://ui.shadcn.com/) for a modern, responsive design.
--   **State Management:** [Redux Toolkit](https://redux-toolkit.js.org/) for centralized and predictable state management.
--   **State Persistence:** [Redux Persist](https://github.com/rt2zz/redux-persist) to save and rehydrate session state from `localStorage`.
--   **AI Integration:** [Google Gemini API](https://ai.google.dev/gemini-api) for dynamic question generation and performance analysis.
+-   **State Management:** [Redux Toolkit](https://redux-toolkit.js.org/) & [Redux Persist](https://github.com/rt2zz/redux-persist)
+-   **AI Integration:** [Google Gemini API](https://ai.google.dev/gemini-api)
 -   **File Handling:** `pdf.js` and `mammoth.js` for client-side resume parsing.
 
 ## 🚀 Getting Started
@@ -52,34 +51,33 @@ To get a local copy up and running, follow these simple steps.
     cd YOUR_REPOSITORY_NAME
     ```
 
-2.  **Install NPM packages:**
+2.  **Install Core Dependencies:**
+    This project relies on several key packages for its functionality. The main `npm install` will handle everything, but the core packages are installed as follows:
     ```
-    npm install
+    # Core React and state management
+    npm install @reduxjs/toolkit react-redux redux-persist
+
+    # Resume parsing libraries
+    npm install pdfjs-dist mammoth
+
+    # UI and Styling
+    npm install tailwindcss postcss autoprefixer lucide-react sonner react-dropzone
     ```
 
-3.  **Set up environment variables:**
-    Create a `.env` file in the root of your project and add your Google Gemini API key:
-    ```
-    VITE_GEMINI_API_KEY=YOUR_API_KEY_HERE
-    ```
-
-4.  **Install shadcn/ui Components:**
-    This project uses `shadcn/ui` for its components. The necessary components are added individually via the command line. If you need to re-install or add new components, you can use the following commands [503]:
+3.  **Set up shadcn/ui Components:**
+    This project uses `shadcn/ui` for its components. After initializing the project, the components are added individually.
     ```
     # Initialize shadcn/ui in the project (only needs to be done once)
     npx shadcn-ui@latest init
 
     # Add the specific components used in this project
-    npx shadcn-ui@latest add button
-    npx shadcn-ui@latest add card
-    npx shadcn-ui@latest add input
-    npx shadcn-ui@latest add label
-    npx shadcn-ui@latest add tabs
-    npx shadcn-ui@latest add dialog
-    npx shadcn-ui@latest add alert-dialog
-    npx shadcn-ui@latest add badge
-    npx shadcn-ui@latest add table
-    npx shadcn-ui@latest add sonner
+    npx shadcn-ui@latest add button card input label tabs dialog alert-dialog badge table sonner
+    ```
+
+4.  **Set up environment variables:**
+    Create a `.env` file in the root of your project and add your Google Gemini API key:
+    ```
+    VITE_GEMINI_API_KEY=YOUR_API_KEY_HERE
     ```
 
 5.  **Run the development server:**
@@ -93,7 +91,6 @@ To get a local copy up and running, follow these simple steps.
 -   **Interviewer Access:** Navigate to the "Interviewer" tab and enter the password (`admin` by default).
 -   **Set the Role:** In the interviewer dashboard, click "Set Interview Role" to define the job title for the AI questions.
 -   **Start an Interview:** Switch to the "Interviewee" tab and upload a resume (PDF or DOCX) to begin the interview process.
-
 ```
 
 ***
