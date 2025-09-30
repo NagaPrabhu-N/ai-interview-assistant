@@ -35,7 +35,7 @@ function App() {
   };
   
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme" className="w-[100%]">
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <div className="bg-background text-foreground w-full md:ml-[15rem] min-h-screen">
         <WelcomeBackModal
           isOpen={showWelcomeBack}
