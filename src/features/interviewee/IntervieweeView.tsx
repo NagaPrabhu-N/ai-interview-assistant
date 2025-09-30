@@ -14,7 +14,7 @@ export default function IntervieweeView() {
   return (
     <> {/* Use a React Fragment to wrap both components */}
       <ChatLogicManager /> {/* This component handles the chat logic */}
-      <Card>
+      <Card className="md:w-[60rem]">
         <CardContent className="p-4 md:p-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Panel */}

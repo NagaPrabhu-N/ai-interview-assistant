@@ -17,7 +17,6 @@ export default function InterviewerView() {
   // Get the current role from the store
   const role = useAppSelector(state => state.interview.role);
 
-
   const handleClearAll = () => {
     if (window.confirm("Are you sure you want to delete all candidate data? This cannot be undone.")) {
       dispatch(resetAllData());
@@ -38,28 +37,36 @@ export default function InterviewerView() {
   };
 
   return (
-    <Card>
+    <Card className="md:w-[60rem]">
       <CardHeader>
-        <CardTitle className="flex justify-between items-center">
-          <span>Interview Results</span>
-          <div className="flex items-center gap-2">
+        <CardTitle className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <span className="text-lg sm:text-xl">Interview Results</span>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             <SetRoleDialog onSetRole={handleSetRole} currentRole={role} />
-            <Button variant="destructive" size="sm" onClick={handleClearAll}>
+            <Button variant="destructive" size="sm" onClick={handleClearAll} className="w-full sm:w-auto">
               Clear All Data
             </Button>
           </div>
         </CardTitle>
-        <CardDescription>Current Role: {role}</CardDescription>
+        <CardDescription className="text-sm">
+          Current Role: <span className="font-medium">{role}</span>
+        </CardDescription>
       </CardHeader>
       <CardContent className="p-4 md:p-6 space-y-4">
         <Input
           placeholder="Search by candidate name..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="max-w-sm"
+          className="w-full sm:max-w-sm"
         />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Mobile: Stack layout, Desktop: Grid layout */}
+        <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-6">
+          {/* Candidate List */}
           <div className="lg:col-span-1">
+            <div className="lg:hidden mb-4">
+              <h3 className="text-lg font-semibold mb-2">Candidates</h3>
+            </div>
             <CandidateList 
               onSelectCandidate={setSelectedCandidateId} 
               selectedCandidateId={selectedCandidateId}
@@ -68,12 +75,19 @@ export default function InterviewerView() {
               onSort={handleSort}
             />
           </div>
+          
+          {/* Candidate Details */}
           <div className="lg:col-span-2">
+            <div className="lg:hidden mb-4">
+              <h3 className="text-lg font-semibold mb-2">Details</h3>
+            </div>
             {selectedCandidateId ? (
               <CandidateDetail candidateId={selectedCandidateId} />
             ) : (
-              <div className="flex items-center justify-center h-full text-muted-foreground rounded-lg border-2 border-dashed">
-                <p>Select a candidate from the list to view details</p>
+              <div className="flex items-center justify-center h-32 lg:h-full text-muted-foreground rounded-lg border-2 border-dashed">
+                <p className="text-center text-sm px-4">
+                  Select a candidate from the list to view details
+                </p>
               </div>
             )}
           </div>

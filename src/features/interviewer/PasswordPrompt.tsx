@@ -33,30 +33,47 @@ export default function PasswordPrompt({ onUnlock }: PasswordPromptProps) {
   };
 
   return (
-    <div className="flex items-center justify-center pt-16">
-      <Card className="w-[380px]">
-        <CardHeader>
-          <CardTitle>Access Restricted</CardTitle>
-          <CardDescription>Enter the password to view the interviewer dashboard.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Enter password..."
-            />
-            {error && <p className="text-sm text-destructive">{error}</p>}
-          </div>
-          <Button onClick={handleSubmit} className="w-full">
-            Unlock
-          </Button>
-        </CardContent>
-      </Card>
+    <div className="flex items-center justify-center min-h-[60vh] px-4 md:w[50rem]">
+      <div className="w-full max-w-md mx-auto">
+        <Card className="shadow-lg">
+          <CardHeader className="space-y-3 text-center">
+            <CardTitle className="text-2xl font-bold">Access Restricted</CardTitle>
+            <CardDescription className="text-base">
+              Enter the password to view the interviewer dashboard.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6 p-6">
+            <div className="space-y-3">
+              <Label htmlFor="password" className="text-sm font-medium">
+                Password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Enter password..."
+                className="w-full h-12 text-base"
+                autoComplete="current-password"
+                autoFocus
+              />
+              {error && (
+                <p className="text-sm text-destructive text-center mt-3">
+                  {error}
+                </p>
+              )}
+            </div>
+            <Button 
+              onClick={handleSubmit} 
+              className="w-full h-12 text-base font-medium"
+              size="default"
+            >
+              Unlock
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
