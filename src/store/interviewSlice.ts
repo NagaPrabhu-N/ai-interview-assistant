@@ -1,4 +1,3 @@
-// src/store/interviewSlice.ts (updated with fetchInterviews thunk)
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 
 // --- Interfaces and Initial State (with new `role` property) ---
@@ -101,82 +100,9 @@ const cleanGeminiResponse = (text: string) => {
   return text.replace(/``````/g, "").trim();
 };
 
-// NEW: Thunk to fetch all interviews from backend and map to candidates
-export const fetchInterviews = createAsyncThunk(
-  'interview/fetchInterviews',
-  async (_, { rejectWithValue }) => {
-    try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
-      const response = await fetch(`${backendUrl}/api/interviews`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch interviews');
-      }
-      const data = await response.json();
-
-      // Map backend data to Candidate format, reconstructing chatHistory from questions and answers
-      const mappedCandidates: Candidate[] = data.map((item: any) => {
-        const chatHistory = [];
-        for (let i = 0; i < item.questions.length; i++) {
-          chatHistory.push({ role: 'bot', content: item.questions[i] });
-          chatHistory.push({ role: 'user', content: item.answers[i] || 'No answer provided' });
-        }
-
-        return {
-          id: item._id,
-          name: item.candidateName, // Map candidateName to name
-          email: item.email,
-          phone: item.phone,
-          score: item.score,
-          summary: item.summary,
-          status: item.status,
-          chatHistory,
-        };
-      });
-
-      return mappedCandidates;
-    } catch (error) {
-      return rejectWithValue((error as Error).message);
-    }
-  }
-);
-
-// In your Redux slice or a separate API utility file (e.g., api.js)
-// In src/store/interviewSlice.ts
-
-export const saveInterviewToBackend = createAsyncThunk(
-  'interview/saveToBackend',
-  async (interviewData, { rejectWithValue }) => {
-    try {
-      console.log('Attempting to save interview data:', interviewData); // Log data being sent
-
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
-      const response = await fetch(`${backendUrl}/api/interviews`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(interviewData),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Save failed with status:', response.status, 'Error:', errorText);
-        throw new Error(`Failed to save interview: ${errorText}`);
-      }
-
-      const savedData = await response.json();
-      console.log('Successfully saved interview:', savedData); // Log success
-      return savedData;
-    } catch (error) {
-      console.error('Save error:', error.message);
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
 export const processInterviewResults = createAsyncThunk(
   'interview/processResults',
-  async (candidateId: string, { dispatch, getState }) => {
+  async (candidateId: string, { getState }) => {
     try {
       const state = getState() as { interview: InterviewState };
       const answers = state.interview.currentInterview.answers;
@@ -227,32 +153,7 @@ export const processInterviewResults = createAsyncThunk(
         console.warn('Failed to parse Gemini output as JSON. Using fallback scoring:', parseError);
       }
 
-      // After processing, get the full interview data from state
-      const candidate = state.interview.candidates.find(c => c.id === candidateId);
-      const currentInterview = state.interview.currentInterview;
-
-      const interviewData = {
-        candidateName: candidate.name,
-        email: candidate.email,
-        phone: candidate.phone,
-        questions: currentInterview.questions.map(q => q.text),
-        answers: currentInterview.answers.map(a => a.answer),
-        score: parsed.score,  // Use parsed values here
-        summary: parsed.summary,
-        status: parsed.status,
-      };
-
-      console.log('Dispatching save with data:', interviewData); // Log before dispatch
-
-      // Save to backend
-      const saveAction = await dispatch(saveInterviewToBackend(interviewData));
-      if (saveInterviewToBackend.rejected.match(saveAction)) {
-        console.error('Save dispatch failed:', saveAction.payload);
-      }
-
-      // Return results as before
-      return { candidateId, ...parsed };
-
+      return { ...parsed, candidateId };
     } catch (error: any) {
       console.warn(`Gemini API failed for scoring (Error: ${error.message}). Using fallback scoring.`);
       await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate processing
@@ -260,7 +161,6 @@ export const processInterviewResults = createAsyncThunk(
     }
   }
 );
-
 
 // Add new async thunk to generate all 6 questions at once
 export const generateAllQuestions = createAsyncThunk(
@@ -484,10 +384,6 @@ const interviewSlice = createSlice({
           candidate.status = status;
         }
         state.currentInterview = initialState.currentInterview;
-      })
-      // NEW: Handle fetchInterviews
-      .addCase(fetchInterviews.fulfilled, (state, action) => {
-        state.candidates = action.payload;
       });
   },
 });

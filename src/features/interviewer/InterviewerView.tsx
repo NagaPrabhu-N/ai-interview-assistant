@@ -1,11 +1,10 @@
-// src/features/interviewer/InterviewerView.tsx (updated to use Redux for candidates)
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import CandidateList from "./CandidateList";
 import CandidateDetail from "./CandidateDetail";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useAppSelector, useAppDispatch } from "@/store/hooks";
-import { fetchInterviews, resetAllData, setInterviewRole } from "@/store/interviewSlice"; // NEW: Import fetchInterviews
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { resetAllData, setInterviewRole  } from "@/store/interviewSlice";
 import { Input } from "@/components/ui/input";
 import SetRoleDialog from "./SetRoleDialog";
 
@@ -14,17 +13,10 @@ export default function InterviewerView() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState<{ key: 'name' | 'score' | 'status', direction: 'asc' | 'desc' }>({ key: 'name', direction: 'asc' });
   const dispatch = useAppDispatch();
-
-  // Get data from Redux
-  const candidates = useAppSelector(state => state.interview.candidates);
+  
+  // Get the current role from the store
   const role = useAppSelector(state => state.interview.role);
 
-  // Fetch interviews from backend on mount
-  useEffect(() => {
-    dispatch(fetchInterviews());
-  }, [dispatch]);
-
-  // For clearing local redux and selections
   const handleClearAll = () => {
     if (window.confirm("Are you sure you want to delete all candidate data? This cannot be undone.")) {
       dispatch(resetAllData());
@@ -67,7 +59,7 @@ export default function InterviewerView() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full sm:max-w-sm"
         />
-
+        
         {/* Mobile: Stack layout, Desktop: Grid layout */}
         <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-6">
           {/* Candidate List */}
@@ -75,16 +67,15 @@ export default function InterviewerView() {
             <div className="lg:hidden mb-4">
               <h3 className="text-lg font-semibold mb-2">Candidates</h3>
             </div>
-            <CandidateList
-              onSelectCandidate={setSelectedCandidateId}
+            <CandidateList 
+              onSelectCandidate={setSelectedCandidateId} 
               selectedCandidateId={selectedCandidateId}
               searchTerm={searchTerm}
               sortConfig={sortConfig}
               onSort={handleSort}
-              candidates={candidates} // Pass Redux candidates
             />
           </div>
-
+          
           {/* Candidate Details */}
           <div className="lg:col-span-2">
             <div className="lg:hidden mb-4">

@@ -1,5 +1,5 @@
-// src/features/interviewer/CandidateList.tsx (updated to accept candidates as prop)
 import { useMemo } from "react";
+import { useAppSelector } from "@/store/hooks";
 import { Candidate } from "@/store/interviewSlice";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -12,10 +12,11 @@ interface CandidateListProps {
   searchTerm: string;
   sortConfig: { key: 'name' | 'score' | 'status', direction: 'asc' | 'desc' };
   onSort: (key: 'name' | 'score' | 'status') => void;
-  candidates: Candidate[]; // NEW: Accept candidates as prop
 }
 
-export default function CandidateList({ onSelectCandidate, selectedCandidateId, searchTerm, sortConfig, onSort, candidates }: CandidateListProps) {
+export default function CandidateList({ onSelectCandidate, selectedCandidateId, searchTerm, sortConfig, onSort }: CandidateListProps) {
+  const candidates = useAppSelector((state) => state.interview.candidates);
+
   const filteredAndSortedCandidates = useMemo(() => {
     let processableCandidates = [...candidates];
 
