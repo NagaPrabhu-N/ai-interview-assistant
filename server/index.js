@@ -10,6 +10,6 @@ app.use(express.json());
 app.use('/api/interviews', interviewRoutes);
 
 // Connect to MongoDB (remove deprecated options)
-mongoose.connect('mongodb://localhost:27017/swipeintern')
+mongoose.connect('mongodb+srv://nagaprabhu1301:na2410200655@swipeintern-cluster.9sknvlp.mongodb.net/swipeintern?retryWrites=true&w=majority')
   .then(() => app.listen(5000, () => console.log('Server running on port 5000')))
   .catch((err) => console.log(err));
