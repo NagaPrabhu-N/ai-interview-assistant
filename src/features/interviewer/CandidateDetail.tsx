@@ -1,3 +1,4 @@
+// src/features/interviewer/CandidateDetail.tsx (unchanged, as it already uses Redux)
 import { useAppSelector } from "@/store/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
