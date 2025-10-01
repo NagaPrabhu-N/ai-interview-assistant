@@ -4,8 +4,10 @@ An intelligent, AI-powered web application designed to automate technical interv
 
 **[➡️ Live Demo](https://ai-interview-assistant-wheat.vercel.app/)** 
 
+
 > **🔑 Demo Credentials:** Use password `admin` to access the Interviewer dashboard.
 
+ 
 *Note: Replace the image URL above with a screenshot of your running application.*
 
 ## ✨ Features
@@ -13,39 +15,36 @@ An intelligent, AI-powered web application designed to automate technical interv
 This project is built with a modern tech stack and includes a robust set of features for both interviewees and interviewers.
 
 ### For the Interviewee:
-- **Automated Interview Flow:** A seamless, multi-step interview process from start to finish.
-- **Resume Parsing:** Automatically extracts candidate details (name, email, phone) from uploaded PDF or DOCX resumes.
-- **AI-Generated Questions:** Receives a series of 6 questions (2 Easy, 2 Medium, 2 Hard) tailored to the job role specified by the interviewer.
-- **Timed Responses:** Each question has a specific time limit, encouraging concise and focused answers. The interview automatically advances only when the timer runs out.
-- **Persistent Sessions:** If a candidate refreshes or closes the page, they are greeted with a "Welcome Back" modal, allowing them to continue their session without losing progress.
+-   **Automated Interview Flow:** A seamless, multi-step interview process from start to finish.
+-   **Resume Parsing:** Automatically extracts candidate details (name, email, phone) from uploaded PDF or DOCX resumes.
+-   **AI-Generated Questions:** Receives a series of 6 questions (2 Easy, 2 Medium, 2 Hard) tailored to the job role specified by the interviewer.
+-   **Timed Responses:** Each question has a specific time limit, encouraging concise and focused answers. The interview automatically advances only when the timer runs out.
+-   **Persistent Sessions:** If a candidate refreshes or closes the page, they are greeted with a "Welcome Back" modal, allowing them to continue their session without losing progress.
 
 ### For the Interviewer:
-- **Secure Dashboard:** The interviewer tab is protected by a password (`admin`) that is required upon every tab switch and page refresh.
-- **Dynamic Role Setting:** Admins can set the specific job role (e.g., "Senior Python Developer") for which the AI should generate questions.
-- **MongoDB Integration:** Interview data is persistently stored in a MongoDB database, enabling data fetching and cross-device access.
-- **Comprehensive Results:** View a list of all candidates who have completed the interview.
-- **Detailed Analysis:** For each candidate, view:
-  - An AI-generated overall score (0-100).
-  - A concise, AI-written summary of the candidate's performance.
-  - The full interview transcript, including every question and answer.
-- **Search and Sort:** The candidate list can be easily searched by name and sorted by name, score, or status (Hired/Rejected).
+-   **Secure Dashboard:** The interviewer tab is protected by a password (`admin`) that is required upon every tab switch and page refresh.
+-   **Dynamic Role Setting:** Admins can set the specific job role (e.g., "Senior Python Developer") for which the AI should generate questions.
+-   **Comprehensive Results:** View a list of all candidates who have completed the interview.
+-   **Detailed Analysis:** For each candidate, view:
+    -   An AI-generated overall score (0-100).
+    -   A concise, AI-written summary of the candidate's performance.
+    -   The full interview transcript, including every question and answer.
+-   **Search and Sort:** The candidate list can be easily searched by name and sorted by name, score, or status (Hired/Rejected).
 
 ## 🛠️ Tech Stack & Core Dependencies
 
-- **Frontend:** [React](https://reactjs.org/) (with Vite)
-- **Backend:** [Node.js](https://nodejs.org/) with Express and MongoDB
-- **UI:** [Tailwind CSS](https://tailwindcss.com/) & [shadcn/ui](https://ui.shadcn.com/)
-- **State Management:**
-  - `@reduxjs/toolkit`: For efficient and predictable global state management.
-  - `redux-persist`: To save and rehydrate session state from `localStorage`.
-- **AI Integration & File Handling:**
-  - `pdfjs-dist`: For client-side PDF resume parsing.
-  - `mammoth`: For client-side DOCX resume parsing.
-- **Component Libraries:**
-  - `lucide-react`: For a clean and modern icon set.
-  - `react-dropzone`: To handle file drag-and-drop functionality.
-  - `sonner`: For elegant and non-intrusive toast notifications.
-
+-   **Frontend:** [React](https://reactjs.org/) (with Vite)
+-   **UI:** [Tailwind CSS](https://tailwindcss.com/) & [shadcn/ui](https://ui.shadcn.com/)
+-   **State Management:**
+    -   `@reduxjs/toolkit`: For efficient and predictable global state management.
+    -   `redux-persist`: To save and rehydrate session state from `localStorage`.
+-   **AI Integration & File Handling:**
+    -   `pdfjs-dist`: For client-side PDF resume parsing.
+    -   `mammoth`: For client-side DOCX resume parsing.
+-   **Component Libraries:**
+    -   `lucide-react`: For a clean and modern icon set.
+    -   `react-dropzone`: To handle file drag-and-drop functionality.
+    -   `sonner`: For elegant and non-intrusive toast notifications.
 
 ## 🚀 Getting Started
 
