@@ -1,4 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+// top of src/store/interviewSlice.ts
+import { saveInterviewDoc, fetchAllInterviews } from '@/lib/interviewRepo';
+
 
 // --- Interfaces and Initial State (with new `role` property) ---
 interface Question {
@@ -103,7 +106,17 @@ const cleanGeminiResponse = (text: string) => {
 export const processInterviewResults = createAsyncThunk(
   'interview/processResults',
   async (candidateId: string, { getState }) => {
+    // After you compute "parsed", before `return { ...parsed, candidateId };`
+const stateAfter = getState() as { interview: InterviewState };
+const { role, currentInterview, candidates } = stateAfter.interview;
+const cand = candidates.find(c => c.id === candidateId);
     try {
+
+      // src/store/interviewSlice.ts (inside the existing processInterviewResults thunk)
+
+
+
+
       const state = getState() as { interview: InterviewState };
       const answers = state.interview.currentInterview.answers;
       if (!answers || answers.length === 0) throw new Error('No answers to process.');
@@ -153,12 +166,42 @@ export const processInterviewResults = createAsyncThunk(
         console.warn('Failed to parse Gemini output as JSON. Using fallback scoring:', parseError);
       }
 
+      await saveInterviewDoc({
+  // top-level identifiers
+  name: cand?.name ?? 'Unknown',
+  email: cand?.email ?? null,
+  phone: cand?.phone ?? null,
+
+  // evaluation
+  score: parsed.score,
+  summary: parsed.summary,
+  status: parsed.status,
+
+  // context of the interview
+  role,
+  questions: currentInterview.questions,
+  answers: currentInterview.answers,
+  chatHistory: cand?.chatHistory ?? [],
+
+  // local linkage if needed
+  localCandidateId: candidateId,
+});
+
+
       return { ...parsed, candidateId };
     } catch (error: any) {
       console.warn(`Gemini API failed for scoring (Error: ${error.message}). Using fallback scoring.`);
       await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate processing
       return { ...DUMMY_SCORING_RESULT, candidateId };
     }
+  }
+);
+
+export const loadAllInterviews = createAsyncThunk(
+  'interview/loadAllInterviews',
+  async () => {
+    const list = await fetchAllInterviews();
+    return list;
   }
 );
 
@@ -384,7 +427,19 @@ const interviewSlice = createSlice({
           candidate.status = status;
         }
         state.currentInterview = initialState.currentInterview;
-      });
+      })
+      .addCase(loadAllInterviews.fulfilled, (state, action) => {
+      state.candidates = (action.payload as any[]).map((doc) => ({
+        id: doc.id,                        // use Firestore doc id
+        name: doc.name ?? null,
+        email: doc.email ?? null,
+        phone: doc.phone ?? null,
+        score: doc.score ?? null,
+        summary: doc.summary ?? null,
+        status: doc.status ?? 'Interviewed',
+        chatHistory: Array.isArray(doc.chatHistory) ? doc.chatHistory : [],
+      }));
+    });
   },
 });
 

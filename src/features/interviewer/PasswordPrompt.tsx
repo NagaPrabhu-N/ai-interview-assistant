@@ -8,27 +8,20 @@ interface PasswordPromptProps {
   onUnlock: () => void;
 }
 
-// For this example, the password is hardcoded.
-// In a real application, this should come from an environment variable.
 const CORRECT_PASSWORD = "admin";
 
 export default function PasswordPrompt({ onUnlock }: PasswordPromptProps) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
+    e?.preventDefault();
     if (password === CORRECT_PASSWORD) {
       setError(null);
       onUnlock();
     } else {
       setError("Incorrect password. Please try again.");
       setPassword("");
-    }
-  };
-
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      handleSubmit();
     }
   };
 
@@ -43,34 +36,43 @@ export default function PasswordPrompt({ onUnlock }: PasswordPromptProps) {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 p-6">
-            <div className="space-y-3">
-              <Label htmlFor="password" className="text-sm font-medium">
-                Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Enter password..."
-                className="w-full h-12 text-base"
-                autoComplete="current-password"
-                autoFocus
+            <form onSubmit={handleSubmit} autoComplete="on" className="space-y-6">
+              {/* Hidden username field to satisfy password form heuristics */}
+              <input
+                type="text"
+                id="username"
+                name="username"
+                autoComplete="username"
+                style={{ display: "none" }}
+                aria-hidden="true"
+                tabIndex={-1}
               />
-              {error && (
-                <p className="text-sm text-destructive text-center mt-3">
-                  {error}
-                </p>
-              )}
-            </div>
-            <Button 
-              onClick={handleSubmit} 
-              className="w-full h-12 text-base font-medium"
-              size="default"
-            >
-              Unlock
-            </Button>
+              <div className="space-y-3">
+                <Label htmlFor="current-password" className="text-sm font-medium">
+                  Password
+                </Label>
+                <Input
+                  id="current-password"
+                  name="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter password..."
+                  className="w-full h-12 text-base"
+                  autoComplete="current-password"
+                  autoFocus
+                  required
+                />
+                {error && (
+                  <p className="text-sm text-destructive text-center mt-3">
+                    {error}
+                  </p>
+                )}
+              </div>
+              <Button type="submit" className="w-full h-12 text-base font-medium" size="default">
+                Unlock
+              </Button>
+            </form>
           </CardContent>
         </Card>
       </div>

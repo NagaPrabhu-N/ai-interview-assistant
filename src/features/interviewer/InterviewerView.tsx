@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CandidateList from "./CandidateList";
 import CandidateDetail from "./CandidateDetail";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { loadAllInterviews } from "@/store/interviewSlice";
 import { resetAllData, setInterviewRole  } from "@/store/interviewSlice";
 import { Input } from "@/components/ui/input";
 import SetRoleDialog from "./SetRoleDialog";
@@ -13,6 +14,10 @@ export default function InterviewerView() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState<{ key: 'name' | 'score' | 'status', direction: 'asc' | 'desc' }>({ key: 'name', direction: 'asc' });
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(loadAllInterviews());
+  }, [dispatch]);
   
   // Get the current role from the store
   const role = useAppSelector(state => state.interview.role);

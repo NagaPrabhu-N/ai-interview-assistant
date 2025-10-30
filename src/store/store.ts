@@ -1,6 +1,6 @@
+// src/store/store.ts
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import interviewReducer from './interviewSlice';
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import {
   persistStore,
   persistReducer,
@@ -11,34 +11,30 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // browser localStorage
 
-// Configuration object for Redux Persist
-const persistConfig = {
-  key: 'root', // The key for the root of the storage
-  storage, // The storage engine to use
-  whitelist: ['interview'], // Only the 'interview' slice will be persisted
-};
-
-// Combine reducers (even if there's only one, this is good practice)
 const rootReducer = combineReducers({
   interview: interviewReducer,
 });
 
-// Create a new reducer that is enhanced with persistence capabilities
+const persistConfig = {
+  key: 'root',
+  storage, // local device only
+  // blacklist: [] // optional
+};
+
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
+  middleware: (getDefault) =>
+    getDefault({
       serializableCheck: {
-        // Ignore these action types, which are dispatched by redux-persist
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }),
 });
 
-// Create a persistor object
 export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
