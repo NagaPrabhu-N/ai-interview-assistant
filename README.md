@@ -119,5 +119,3 @@ To get a local copy up and running, follow these simple steps.
 
 **Built with ❤️ using React, Redux, Google Gemini AI, and Firebase Cloud Firestore**
 ```
-
-***
