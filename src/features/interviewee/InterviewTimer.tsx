@@ -34,7 +34,7 @@ export default function InterviewTimer() {
       setTimeLeft(currentQuestion.timeLimit);
       setIsTimerActive(true);
       setHasTimerExpired(false); // Reset expiry flag
-      console.log(`Timer set for question ${currentQuestionIndex + 1}: ${currentQuestion.timeLimit} seconds`);
+      // console.log(`Timer set for question ${currentQuestionIndex + 1}: ${currentQuestion.timeLimit} seconds`);
     } else {
       setIsTimerActive(false);
       setTimeLeft(0);

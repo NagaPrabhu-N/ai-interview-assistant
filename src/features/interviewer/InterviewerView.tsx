@@ -8,11 +8,14 @@ import { loadAllInterviews } from "@/store/interviewSlice";
 import { resetAllData, setInterviewRole  } from "@/store/interviewSlice";
 import { Input } from "@/components/ui/input";
 import SetRoleDialog from "./SetRoleDialog";
+import ConfirmDeleteWithPassword from "./ConfirmDeleteWithPassword";
+import { purgeAllInterviews } from '@/store/interviewSlice';
 
 export default function InterviewerView() {
   const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState<{ key: 'name' | 'score' | 'status', direction: 'asc' | 'desc' }>({ key: 'name', direction: 'asc' });
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -22,12 +25,10 @@ export default function InterviewerView() {
   // Get the current role from the store
   const role = useAppSelector(state => state.interview.role);
 
-  const handleClearAll = () => {
-    if (window.confirm("Are you sure you want to delete all candidate data? This cannot be undone.")) {
-      dispatch(resetAllData());
-      setSelectedCandidateId(null);
-    }
-  };
+const handleDeleteAll = async () => {
+  await dispatch(purgeAllInterviews());
+  setSelectedCandidateId(null);
+};
 
   const handleSetRole = (newRole: string) => {
     dispatch(setInterviewRole(newRole));
@@ -48,7 +49,12 @@ export default function InterviewerView() {
           <span className="text-lg sm:text-xl">Interview Results</span>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             <SetRoleDialog onSetRole={handleSetRole} currentRole={role} />
-            <Button variant="destructive" size="sm" onClick={handleClearAll} className="w-full sm:w-auto">
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => setDeleteOpen(true)}
+              className="w-full sm:w-auto"
+            >
               Clear All Data
             </Button>
           </div>
@@ -98,6 +104,12 @@ export default function InterviewerView() {
           </div>
         </div>
       </CardContent>
+
+      <ConfirmDeleteWithPassword
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        onConfirm={handleDeleteAll}
+      />
     </Card>
   );
 }

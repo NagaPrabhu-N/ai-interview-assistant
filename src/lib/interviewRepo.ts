@@ -8,6 +8,7 @@ import {
   query,
   orderBy,
   serverTimestamp,
+  deleteDoc,
 } from 'firebase/firestore';
 
 function slugifyName(name: string) {
@@ -57,4 +58,11 @@ export async function fetchAllInterviews() {
     const { createdAt, ...rest } = data;
     return { id: d.id, ...rest, createdAtMS: createdAtMs };
   });
+}
+
+export async function deleteAllInterviews() {
+  const col = collection(db, "interviews");
+  const snap = await getDocs(col);
+  const deletions = snap.docs.map((d) => deleteDoc(doc(db, "interviews", d.id)));
+  await Promise.all(deletions);
 }

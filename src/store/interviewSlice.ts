@@ -2,6 +2,8 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 // top of src/store/interviewSlice.ts
 import { saveInterviewDoc, fetchAllInterviews } from '@/lib/interviewRepo';
 
+import { deleteAllInterviews } from '@/lib/interviewRepo';
+
 
 // --- Interfaces and Initial State (with new `role` property) ---
 interface Question {
@@ -103,13 +105,22 @@ const cleanGeminiResponse = (text: string) => {
   return text.replace(/``````/g, "").trim();
 };
 
+export const purgeAllInterviews = createAsyncThunk(
+  "interview/purgeAllInterviews",
+  async () => {
+    await deleteAllInterviews();
+    return true;
+  }
+);
+
+
 export const processInterviewResults = createAsyncThunk(
   'interview/processResults',
   async (candidateId: string, { getState }) => {
     // After you compute "parsed", before `return { ...parsed, candidateId };`
-const stateAfter = getState() as { interview: InterviewState };
-const { role, currentInterview, candidates } = stateAfter.interview;
-const cand = candidates.find(c => c.id === candidateId);
+    const stateAfter = getState() as { interview: InterviewState };
+    const { role, currentInterview, candidates } = stateAfter.interview;
+    const cand = candidates.find(c => c.id === candidateId);
     try {
 
       // src/store/interviewSlice.ts (inside the existing processInterviewResults thunk)
@@ -148,7 +159,7 @@ const cand = candidates.find(c => c.id === candidateId);
       }
 
       const data = await response.json();
-      console.log('Gemini raw response:', data);
+      // console.log('Gemini raw response:', data);
 
       if (data.error) {
         console.error('Gemini API error in response:', data.error);
@@ -253,7 +264,7 @@ export const generateAllQuestions = createAsyncThunk(
       }
 
       const data = await response.json();
-      console.log('Gemini raw response:', data);
+      // console.log('Gemini raw response:', data);
 
       if (data.error) {
         console.error('Gemini API error in response:', data.error);
@@ -439,6 +450,9 @@ const interviewSlice = createSlice({
         status: doc.status ?? 'Interviewed',
         chatHistory: Array.isArray(doc.chatHistory) ? doc.chatHistory : [],
       }));
+    })
+    .addCase(purgeAllInterviews.fulfilled, (state) => {
+      Object.assign(state, initialState);
     });
   },
 });
